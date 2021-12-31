@@ -373,7 +373,7 @@ impl<Y: for<'a> Yokeable<'a>, C> Yoke<Y, C> {
     /// #
     /// #     fn transform_mut<F>(&'a mut self, f: F)
     /// #     where
-    /// #         F: 'static + FnOnce(&'a mut Self::Output),
+    /// #         F: FnOnce(&'a mut Self::Output),
     /// #     {
     /// #         unsafe { f(mem::transmute(self)) }
     /// #     }
@@ -381,7 +381,7 @@ impl<Y: for<'a> Yokeable<'a>, C> Yoke<Y, C> {
     /// ```
     pub fn with_mut<'a, F>(&'a mut self, f: F)
     where
-        F: 'static + for<'b> FnOnce(&'b mut <Y as Yokeable<'a>>::Output),
+        F: for<'b> FnOnce(&'b mut <Y as Yokeable<'b>>::Output),
     {
         self.yokeable.transform_mut(f)
     }
@@ -629,7 +629,7 @@ impl<Y: for<'a> Yokeable<'a>, C> Yoke<Y, C> {
     /// #
     /// #     fn transform_mut<F>(&'a mut self, f: F)
     /// #     where
-    /// #         F: 'static + FnOnce(&'a mut Self::Output),
+    /// #         F: FnOnce(&'a mut Self::Output),
     /// #     {
     /// #         unsafe { f(mem::transmute(self)) }
     /// #     }
@@ -968,7 +968,7 @@ impl<Y: for<'a> Yokeable<'a>, C> Yoke<Y, C> {
 /// #
 /// #     fn transform_mut<F>(&'a mut self, f: F)
 /// #     where
-/// #         F: 'static + FnOnce(&'a mut Self::Output),
+/// #         F: FnOnce(&'a mut Self::Output),
 /// #     {
 /// #         unsafe { f(mem::transmute(self)) }
 /// #     }

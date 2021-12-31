@@ -22,7 +22,7 @@ macro_rules! copy_yoke_impl {
         }
         fn transform_mut<F>(&'a mut self, f: F)
         where
-            F: 'static + for<'b> FnOnce(&'b mut Self::Output),
+            F: for<'b> FnOnce(&'b mut <Self as Yokeable<'b>>::Output),
         {
             f(self)
         }
@@ -83,10 +83,15 @@ macro_rules! unsafe_complex_yoke_impl {
 
         fn transform_mut<F>(&'a mut self, f: F)
         where
-            F: 'static + for<'b> FnOnce(&'b mut Self::Output),
+            F: for<'b> FnOnce(&'b mut <Self as Yokeable<'b>>::Output),
         {
             // Cast away the lifetime of Self
-            unsafe { f(mem::transmute::<&'a mut Self, &'a mut Self::Output>(self)) }
+            unsafe {
+                f(mem::transmute::<
+                    &'a mut Self,
+                    &'a mut <Self as Yokeable<'_>>::Output,
+                >(self))
+            }
         }
     };
 }
@@ -103,7 +108,7 @@ unsafe impl<'a, T1: 'static + for<'b> Yokeable<'b>, T2: 'static + for<'b> Yokeab
     unsafe_complex_yoke_impl!();
 }
 
-unsafe impl<'a, T: Yokeable<'a>, const N: usize> Yokeable<'a> for [T; N] {
+unsafe impl<'a, T: for<'b> Yokeable<'b>, const N: usize> Yokeable<'a> for [T; N] {
     type Output = [<T as Yokeable<'a>>::Output; N];
     unsafe_complex_yoke_impl!();
 }

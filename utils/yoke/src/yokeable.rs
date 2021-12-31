@@ -80,7 +80,7 @@ use core::mem;
 ///
 ///     fn transform_mut<F>(&'a mut self, f: F)
 ///     where
-///         F: 'static + FnOnce(&'a mut Self::Output),
+///         F: for<'b> FnOnce(&'b mut <Self as Yokeable<'b>>::Output),
 ///     {
 ///         unsafe { f(mem::transmute::<&mut Self, &mut Self::Output>(self)) }
 ///     }
@@ -194,7 +194,7 @@ pub unsafe trait Yokeable<'a>: 'static {
     /// #
     /// #     fn transform_mut<F>(&'a mut self, f: F)
     /// #     where
-    /// #         F: 'static + FnOnce(&'a mut Self::Output),
+    /// #         F: for<'b> FnOnce(&'b mut Self::Output),
     /// #     {
     /// #         unsafe { f(mem::transmute(self)) }
     /// #     }
@@ -225,7 +225,7 @@ pub unsafe trait Yokeable<'a>: 'static {
     fn transform_mut<F>(&'a mut self, f: F)
     where
         // be VERY CAREFUL changing this signature, it is very nuanced (see above)
-        F: 'static + for<'b> FnOnce(&'b mut Self::Output);
+        F: for<'b> FnOnce(&'b mut <Self as Yokeable<'b>>::Output);
 }
 
 #[cfg(feature = "alloc")]
@@ -256,7 +256,7 @@ where
 
     fn transform_mut<F>(&'a mut self, f: F)
     where
-        F: 'static + for<'b> FnOnce(&'b mut Self::Output),
+        F: for<'b> FnOnce(&'b mut <Self as Yokeable<'b>>::Output),
     {
         // Cast away the lifetime of Self
         unsafe { f(mem::transmute::<&'a mut Self, &'a mut Self::Output>(self)) }
@@ -281,7 +281,7 @@ unsafe impl<'a, T: 'static + ?Sized> Yokeable<'a> for &'static T {
 
     fn transform_mut<F>(&'a mut self, f: F)
     where
-        F: 'static + for<'b> FnOnce(&'b mut Self::Output),
+        F: for<'b> FnOnce(&'b mut <Self as Yokeable<'b>>::Output),
     {
         // Cast away the lifetime of Self
         unsafe { f(mem::transmute::<&'a mut Self, &'a mut Self::Output>(self)) }

@@ -52,7 +52,7 @@ unsafe impl<'a> Yokeable<'a> for Bar<'static> {
 
     fn transform_mut<F>(&'a mut self, f: F)
     where
-        F: 'static + FnOnce(&'a mut Self::Output),
+        F: FnOnce(&'a mut Self::Output),
     {
         unsafe { f(mem::transmute(self)) }
     }

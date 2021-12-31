@@ -71,7 +71,7 @@ use alloc::{
 ///
 ///     fn transform_mut<F>(&'a mut self, f: F)
 ///     where
-///         F: 'static + FnOnce(&'a mut Self::Output),
+///         F: for<'b> FnOnce(&'b mut <Self as Yokeable<'b>>::Output)
 ///     {
 ///         unsafe { f(mem::transmute::<&mut Self, &mut Self::Output>(self)) }
 ///     }

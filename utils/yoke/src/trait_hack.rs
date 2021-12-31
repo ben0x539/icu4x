@@ -93,7 +93,7 @@
 //! #    }
 //! #    fn transform_mut<F>(&'a mut self, f: F)
 //! #    where
-//! #        F: 'static + for<'b> FnOnce(&'b mut Self::Output),
+//! #        F: for<'b> FnOnce(&'b mut Self::Output),
 //! #    {
 //! #        unsafe {
 //! #            f(std::mem::transmute::<&'a mut Self, &'a mut Self::Output>(
@@ -153,7 +153,7 @@
 //! #    }
 //! #    fn transform_mut<F>(&'a mut self, f: F)
 //! #    where
-//! #        F: 'static + for<'b> FnOnce(&'b mut Self::Output),
+//! #        F: for<'b> FnOnce(&'b mut Self::Output),
 //! #    {
 //! #        unsafe {
 //! #            f(std::mem::transmute::<&'a mut Self, &'a mut Self::Output>(
@@ -218,7 +218,7 @@
 //! #    }
 //! #    fn transform_mut<F>(&'a mut self, f: F)
 //! #    where
-//! #        F: 'static + for<'b> FnOnce(&'b mut Self::Output),
+//! #        F: for<'b> FnOnce(&'b mut Self::Output),
 //! #    {
 //! #        unsafe {
 //! #            f(std::mem::transmute::<&'a mut Self, &'a mut Self::Output>(
